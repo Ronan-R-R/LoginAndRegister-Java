@@ -17,6 +17,7 @@ public class RegisterFrame extends JFrame {
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 5, 5, 5); // Margin between elements
+        gbc.anchor = GridBagConstraints.WEST; // Align labels to the left
 
         JLabel usernameLabel = new JLabel("Username:");
         usernameField = new JTextField();
@@ -51,7 +52,7 @@ public class RegisterFrame extends JFrame {
             }
         });
 
-        JButton registerButton = new JButton("Register");
+        JButton registerButton = createRoundedButton("Register");
         registerButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 FormativeLogin login = new FormativeLogin();
@@ -71,7 +72,7 @@ public class RegisterFrame extends JFrame {
             }
         });
 
-        JButton backButton = new JButton("Back");
+        JButton backButton = createRoundedButton("Back");
         backButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 new MainFrame();
@@ -83,6 +84,7 @@ public class RegisterFrame extends JFrame {
         gbc.gridx = 0; gbc.gridy = 0;
         add(usernameLabel, gbc);
         gbc.gridx = 1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
         add(usernameField, gbc);
 
         gbc.gridx = 0; gbc.gridy = 1;
@@ -117,6 +119,22 @@ public class RegisterFrame extends JFrame {
         add(buttonPanel, gbc);
 
         setVisible(true);
+    }
+
+    private JButton createRoundedButton(String text) {
+        JButton button = new JButton(text);
+        button.setPreferredSize(new Dimension(100, 40));
+        button.setFocusPainted(false);
+        button.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1, true));
+        button.setBorder(BorderFactory.createCompoundBorder(
+                button.getBorder(),
+                BorderFactory.createEmptyBorder(5, 5, 5, 5)
+        ));
+        button.setContentAreaFilled(false);
+        button.setOpaque(true);
+        button.setBackground(Color.LIGHT_GRAY);
+        button.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        return button;
     }
 
     private void styleTextField(JTextField textField) {
