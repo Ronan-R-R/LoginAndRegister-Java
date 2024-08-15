@@ -49,15 +49,19 @@ public class MainFrame extends JFrame {
         JButton button = new JButton(text);
         button.setPreferredSize(new Dimension(100, 40));
         button.setFocusPainted(false);
-        button.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1, true));
-        button.setBorder(BorderFactory.createCompoundBorder(
-                button.getBorder(),
-                BorderFactory.createEmptyBorder(5, 5, 5, 5)
-        ));
+        button.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         button.setContentAreaFilled(false);
         button.setOpaque(true);
         button.setBackground(Color.LIGHT_GRAY);
         button.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        button.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(Color.GRAY, 1, true),
+                BorderFactory.createEmptyBorder(5, 5, 5, 5)
+        ));
+        button.setBorder(BorderFactory.createCompoundBorder(
+                button.getBorder(),
+                BorderFactory.createEmptyBorder(5, 5, 5, 5)
+        ));
         return button;
     }
 

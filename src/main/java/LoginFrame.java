@@ -10,7 +10,7 @@ public class LoginFrame extends JFrame {
 
     public LoginFrame() {
         setTitle("Login");
-        setSize(450, 250);
+        setSize(400, 200);
         setLayout(new GridBagLayout()); // Use GridBagLayout for better control
         setLocationRelativeTo(null); // Center the window
         setPadding(); // Add padding
@@ -88,21 +88,30 @@ public class LoginFrame extends JFrame {
         JButton button = new JButton(text);
         button.setPreferredSize(new Dimension(100, 40));
         button.setFocusPainted(false);
-        button.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1, true));
-        button.setBorder(BorderFactory.createCompoundBorder(
-                button.getBorder(),
-                BorderFactory.createEmptyBorder(5, 5, 5, 5)
-        ));
+        button.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         button.setContentAreaFilled(false);
         button.setOpaque(true);
         button.setBackground(Color.LIGHT_GRAY);
         button.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        button.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(Color.GRAY, 2, true),
+                BorderFactory.createEmptyBorder(5, 5, 5, 5)
+        ));
+        button.setFocusPainted(false);
+        button.setPreferredSize(new Dimension(100, 40));
+        button.setBackground(Color.LIGHT_GRAY);
+        button.setOpaque(true);
+        button.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2, true));
+        button.setBorder(BorderFactory.createCompoundBorder(
+                button.getBorder(),
+                BorderFactory.createEmptyBorder(5, 5, 5, 5)
+        ));
         return button;
     }
 
     private void styleTextField(JTextField textField) {
-        textField.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1, true));
-        textField.setPreferredSize(new Dimension(150, 30));
+        textField.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2, true));
+        textField.setPreferredSize(new Dimension(200, 30));
         textField.setBorder(BorderFactory.createCompoundBorder(
                 textField.getBorder(),
                 BorderFactory.createEmptyBorder(5, 5, 5, 5)
@@ -110,8 +119,8 @@ public class LoginFrame extends JFrame {
     }
 
     private void stylePasswordField(JPasswordField passwordField) {
-        passwordField.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1, true));
-        passwordField.setPreferredSize(new Dimension(150, 30));
+        passwordField.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2, true));
+        passwordField.setPreferredSize(new Dimension(200, 30));
         passwordField.setBorder(BorderFactory.createCompoundBorder(
                 passwordField.getBorder(),
                 BorderFactory.createEmptyBorder(5, 5, 5, 5)
