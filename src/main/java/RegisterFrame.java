@@ -2,7 +2,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.border.EmptyBorder;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+import java.util.regex.Pattern;
 
 public class RegisterFrame extends JFrame {
     private JTextField usernameField, firstNameField, lastNameField;
@@ -12,7 +14,7 @@ public class RegisterFrame extends JFrame {
 
     public RegisterFrame() {
         setTitle("Register");
-        setSize(450, 350);
+        setSize(600, 400); // Increased starting size
         setLayout(new GridBagLayout()); // Use GridBagLayout for better control
         setLocationRelativeTo(null); // Center the window
         setPadding(); // Add padding
@@ -54,26 +56,28 @@ public class RegisterFrame extends JFrame {
             }
         });
 
-        usernameRequirement = new JLabel("<html>Username must contain # and be no more than 8 characters.</html>");
+        usernameRequirement = new JLabel("Username must contain # and be no more than 8 characters.");
         usernameRequirement.setForeground(Color.RED);
         usernameRequirement.setVisible(false);
-        usernameField.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusGained(java.awt.event.FocusEvent evt) {
+        usernameField.addFocusListener(new FocusAdapter() {
+            public void focusGained(FocusEvent evt) {
                 usernameRequirement.setVisible(true);
+                validateUsername();
             }
-            public void focusLost(java.awt.event.FocusEvent evt) {
+            public void focusLost(FocusEvent evt) {
                 usernameRequirement.setVisible(false);
             }
         });
 
-        passwordRequirement = new JLabel("<html>Password must be at least 8 characters long, contain at least one capital letter, one number, and one special character.</html>");
+        passwordRequirement = new JLabel("Password must be at least 8 characters long, contain at least one capital letter, one number, and one special character.");
         passwordRequirement.setForeground(Color.RED);
         passwordRequirement.setVisible(false);
-        passwordField.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusGained(java.awt.event.FocusEvent evt) {
+        passwordField.addFocusListener(new FocusAdapter() {
+            public void focusGained(FocusEvent evt) {
                 passwordRequirement.setVisible(true);
+                validatePassword();
             }
-            public void focusLost(java.awt.event.FocusEvent evt) {
+            public void focusLost(FocusEvent evt) {
                 passwordRequirement.setVisible(false);
             }
         });
@@ -136,10 +140,12 @@ public class RegisterFrame extends JFrame {
         gbc.gridx = 1; gbc.gridy = 5;
         add(showPassword, gbc);
 
-        gbc.gridx = 1; gbc.gridy = 6;
+        // Span the requirement labels from left to right
+        gbc.gridx = 0; gbc.gridy = 6; gbc.gridwidth = 2;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
         add(usernameRequirement, gbc);
 
-        gbc.gridx = 1; gbc.gridy = 7;
+        gbc.gridx = 0; gbc.gridy = 7; gbc.gridwidth = 2;
         add(passwordRequirement, gbc);
 
         // Horizontal alignment of buttons
@@ -147,7 +153,7 @@ public class RegisterFrame extends JFrame {
         buttonPanel.add(registerButton);
         buttonPanel.add(backButton);
 
-        gbc.gridx = 1; gbc.gridy = 8;
+        gbc.gridx = 1; gbc.gridy = 8; gbc.gridwidth = 2;
         add(buttonPanel, gbc);
 
         setVisible(true);
@@ -163,20 +169,7 @@ public class RegisterFrame extends JFrame {
         button.setBackground(Color.LIGHT_GRAY);
         button.setCursor(new Cursor(Cursor.HAND_CURSOR));
         button.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(Color.GRAY, 1, true),
-                BorderFactory.createEmptyBorder(5, 5, 5, 5)
-        ));
-        button.setBorder(BorderFactory.createCompoundBorder(
-                button.getBorder(),
-                BorderFactory.createEmptyBorder(5, 5, 5, 5)
-        ));
-        button.setFocusPainted(false);
-        button.setPreferredSize(new Dimension(100, 40));
-        button.setBackground(Color.LIGHT_GRAY);
-        button.setOpaque(true);
-        button.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2, true));
-        button.setBorder(BorderFactory.createCompoundBorder(
-                button.getBorder(),
+                BorderFactory.createLineBorder(Color.GRAY, 2, true),
                 BorderFactory.createEmptyBorder(5, 5, 5, 5)
         ));
         return button;
@@ -202,5 +195,28 @@ public class RegisterFrame extends JFrame {
 
     private void setPadding() {
         getRootPane().setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+    }
+
+    private void validateUsername() {
+        String username = usernameField.getText();
+        if (username.contains("#") && username.length() <= 8) {
+            usernameRequirement.setForeground(Color.GREEN);
+        } else {
+            usernameRequirement.setForeground(Color.RED);
+        }
+    }
+
+    private void validatePassword() {
+        String password = new String(passwordField.getPassword());
+        boolean hasUpperCase = !password.equals(password.toLowerCase());
+        boolean hasNumber = Pattern.compile("[0-9]").matcher(password).find();
+        boolean hasSpecialChar = Pattern.compile("[^a-zA-Z0-9]").matcher(password).find();
+        boolean isValidLength = password.length() >= 8;
+
+        if (hasUpperCase && hasNumber && hasSpecialChar && isValidLength) {
+            passwordRequirement.setForeground(Color.GREEN);
+        } else {
+            passwordRequirement.setForeground(Color.RED);
+        }
     }
 }
