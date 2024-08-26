@@ -14,13 +14,14 @@ public class RegisterFrame extends JFrame {
 
     public RegisterFrame() {
         setTitle("Register");
-        setSize(600, 400); // Increased starting size
-        setLayout(new GridBagLayout()); // Use GridBagLayout for better control
+        setSize(600, 400); // Set initial size
+        setResizable(false); // Disable window resizing
+        setLayout(new GridBagLayout());
         setLocationRelativeTo(null); // Center the window
         setPadding(); // Add padding
 
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(5, 5, 5, 5); // Margin between elements
+        gbc.insets = new Insets(5, 5, 5, 5);
         gbc.anchor = GridBagConstraints.WEST; // Align labels to the left
 
         JLabel usernameLabel = new JLabel("Username:");
@@ -56,12 +57,14 @@ public class RegisterFrame extends JFrame {
             }
         });
 
-        usernameRequirement = new JLabel("Username must contain # and be no more than 8 characters.");
+        // Adjusted requirement labels to span more horizontally
+        usernameRequirement = new JLabel("<html>Username must contain # and be no more than 8 characters.</html>");
         usernameRequirement.setForeground(Color.RED);
         usernameRequirement.setVisible(false);
         usernameField.addFocusListener(new FocusAdapter() {
             public void focusGained(FocusEvent evt) {
                 usernameRequirement.setVisible(true);
+                animateRequirements(usernameRequirement);
                 validateUsername();
             }
             public void focusLost(FocusEvent evt) {
@@ -69,12 +72,13 @@ public class RegisterFrame extends JFrame {
             }
         });
 
-        passwordRequirement = new JLabel("Password must be at least 8 characters long, contain at least one capital letter, one number, and one special character.");
+        passwordRequirement = new JLabel("<html>Password must minimum 8 characters, a capital letter, a number, and a special character.</html>");
         passwordRequirement.setForeground(Color.RED);
         passwordRequirement.setVisible(false);
         passwordField.addFocusListener(new FocusAdapter() {
             public void focusGained(FocusEvent evt) {
                 passwordRequirement.setVisible(true);
+                animateRequirements(passwordRequirement);
                 validatePassword();
             }
             public void focusLost(FocusEvent evt) {
@@ -140,7 +144,7 @@ public class RegisterFrame extends JFrame {
         gbc.gridx = 1; gbc.gridy = 5;
         add(showPassword, gbc);
 
-        // Span the requirement labels from left to right
+        // Requirement labels positioned separately to avoid affecting the rest of the layout
         gbc.gridx = 0; gbc.gridy = 6; gbc.gridwidth = 2;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         add(usernameRequirement, gbc);
@@ -156,6 +160,7 @@ public class RegisterFrame extends JFrame {
         gbc.gridx = 1; gbc.gridy = 8; gbc.gridwidth = 2;
         add(buttonPanel, gbc);
 
+        adjustWindowSize();
         setVisible(true);
     }
 
@@ -218,5 +223,28 @@ public class RegisterFrame extends JFrame {
         } else {
             passwordRequirement.setForeground(Color.RED);
         }
+    }
+
+    private void animateRequirements(JLabel label) {
+        Timer timer = new Timer(10, new ActionListener() {
+            int height = 0;
+            public void actionPerformed(ActionEvent e) {
+                if (height < label.getPreferredSize().height) {
+                    height += 2;
+                    label.setSize(label.getWidth(), height);
+                    label.repaint();
+                } else {
+                    ((Timer) e.getSource()).stop();
+                }
+            }
+        });
+        label.setSize(label.getWidth(), 0);
+        timer.start();
+    }
+
+    private void adjustWindowSize() {
+        // Automatically adjust window size based on content
+        pack();
+        setSize(getWidth(), getHeight() + 50); // Add some space for the buttons
     }
 }
