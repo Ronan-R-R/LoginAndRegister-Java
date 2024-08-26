@@ -2,21 +2,26 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.HashMap;
+import java.util.Map;
 
 public class LoginFrame extends JFrame {
     private JTextField usernameField;
     private JPasswordField passwordField;
     private JCheckBox showPassword;
+    private JLabel loginStatus;
+    private static final Map<String, String[]> userDatabase = new HashMap<>(); // Store user details in memory
 
     public LoginFrame() {
         setTitle("Login");
-        setSize(400, 200);
-        setLayout(new GridBagLayout()); // Use GridBagLayout for better control
+        setSize(400, 300); // Increased size for better visibility
+        setResizable(false); // Disable window resizing
+        setLayout(new GridBagLayout());
         setLocationRelativeTo(null); // Center the window
         setPadding(); // Add padding
 
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(5, 5, 5, 5); // Margin between elements
+        gbc.insets = new Insets(5, 5, 5, 5);
         gbc.anchor = GridBagConstraints.WEST; // Align labels to the left
 
         JLabel usernameLabel = new JLabel("Username:");
@@ -38,15 +43,28 @@ public class LoginFrame extends JFrame {
             }
         });
 
+        loginStatus = new JLabel();
+        loginStatus.setForeground(Color.RED);
+
         JButton loginButton = createRoundedButton("Login");
         loginButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                FormativeLogin login = new FormativeLogin();
                 String username = usernameField.getText();
                 String password = new String(passwordField.getPassword());
 
-                String loginMessage = login.login(username, password);
-                JOptionPane.showMessageDialog(null, loginMessage);
+                if (userDatabase.containsKey(username) && userDatabase.get(username)[0].equals(password)) {
+                    String firstName = userDatabase.get(username)[1];
+                    String lastName = userDatabase.get(username)[2];
+                    JOptionPane.showMessageDialog(null,
+                            "Congratulations " + firstName + " " + lastName + ", You have made it to the second year. Wishing you all the best.",
+                            "Login Success",
+                            JOptionPane.INFORMATION_MESSAGE);
+                } else {
+                    JOptionPane.showMessageDialog(null,
+                            "Incorrect credentials have been supplied, try again.",
+                            "Login Failed",
+                            JOptionPane.ERROR_MESSAGE);
+                }
             }
         });
 
@@ -73,12 +91,15 @@ public class LoginFrame extends JFrame {
         gbc.gridx = 1; gbc.gridy = 2;
         add(showPassword, gbc);
 
+        gbc.gridx = 1; gbc.gridy = 3;
+        add(loginStatus, gbc);
+
         // Horizontal alignment of buttons
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
         buttonPanel.add(loginButton);
         buttonPanel.add(backButton);
 
-        gbc.gridx = 1; gbc.gridy = 3;
+        gbc.gridx = 1; gbc.gridy = 4;
         add(buttonPanel, gbc);
 
         setVisible(true);
@@ -95,15 +116,6 @@ public class LoginFrame extends JFrame {
         button.setCursor(new Cursor(Cursor.HAND_CURSOR));
         button.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(Color.GRAY, 2, true),
-                BorderFactory.createEmptyBorder(5, 5, 5, 5)
-        ));
-        button.setFocusPainted(false);
-        button.setPreferredSize(new Dimension(100, 40));
-        button.setBackground(Color.LIGHT_GRAY);
-        button.setOpaque(true);
-        button.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2, true));
-        button.setBorder(BorderFactory.createCompoundBorder(
-                button.getBorder(),
                 BorderFactory.createEmptyBorder(5, 5, 5, 5)
         ));
         return button;
@@ -129,5 +141,9 @@ public class LoginFrame extends JFrame {
 
     private void setPadding() {
         getRootPane().setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+    }
+
+    public static void addUser(String username, String password, String firstName, String lastName) {
+        userDatabase.put(username, new String[]{password, firstName, lastName});
     }
 }

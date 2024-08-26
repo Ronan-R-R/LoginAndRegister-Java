@@ -72,7 +72,7 @@ public class RegisterFrame extends JFrame {
             }
         });
 
-        passwordRequirement = new JLabel("<html>Password must minimum 8 characters, a capital letter, a number, and a special character.</html>");
+        passwordRequirement = new JLabel("<html>Password must be at least 8 characters long, contain one capital letter, a number, and a special character.</html>");
         passwordRequirement.setForeground(Color.RED);
         passwordRequirement.setVisible(false);
         passwordField.addFocusListener(new FocusAdapter() {
@@ -89,6 +89,10 @@ public class RegisterFrame extends JFrame {
         JButton registerButton = createRoundedButton("Register");
         registerButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                if (isAnyFieldEmpty()) {
+                    return; // Exit if any field is empty
+                }
+
                 FormativeLogin login = new FormativeLogin();
                 String username = usernameField.getText();
                 String password = new String(passwordField.getPassword());
@@ -103,6 +107,10 @@ public class RegisterFrame extends JFrame {
 
                 String registrationMessage = login.regUser(username, password, firstName, lastName);
                 JOptionPane.showMessageDialog(null, registrationMessage);
+
+                if (registrationMessage.contains("successfully")) {
+                    LoginFrame.addUser(username, password, firstName, lastName);
+                }
             }
         });
 
@@ -246,5 +254,29 @@ public class RegisterFrame extends JFrame {
         // Automatically adjust window size based on content
         pack();
         setSize(getWidth(), getHeight() + 50); // Add some space for the buttons
+    }
+
+    private boolean isAnyFieldEmpty() {
+        if (usernameField.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Username cannot be empty.");
+            return true;
+        }
+        if (firstNameField.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "First Name cannot be empty.");
+            return true;
+        }
+        if (lastNameField.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Last Name cannot be empty.");
+            return true;
+        }
+        if (new String(passwordField.getPassword()).isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Password cannot be empty.");
+            return true;
+        }
+        if (new String(confirmPasswordField.getPassword()).isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Confirm Password cannot be empty.");
+            return true;
+        }
+        return false;
     }
 }
