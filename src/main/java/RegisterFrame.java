@@ -11,6 +11,7 @@ public class RegisterFrame extends JFrame {
     private JPasswordField passwordField, confirmPasswordField;
     private JCheckBox showPassword;
     private JLabel usernameRequirement, passwordRequirement;
+    private boolean usernameValid = false, passwordValid = false;
 
     public RegisterFrame() {
         setTitle("Register");
@@ -63,9 +64,8 @@ public class RegisterFrame extends JFrame {
         usernameRequirement.setVisible(false);
         usernameField.addFocusListener(new FocusAdapter() {
             public void focusGained(FocusEvent evt) {
-                usernameRequirement.setVisible(true);
-                animateRequirements(usernameRequirement);
                 validateUsername();
+                animateRequirements(usernameRequirement);
             }
             public void focusLost(FocusEvent evt) {
                 usernameRequirement.setVisible(false);
@@ -77,9 +77,8 @@ public class RegisterFrame extends JFrame {
         passwordRequirement.setVisible(false);
         passwordField.addFocusListener(new FocusAdapter() {
             public void focusGained(FocusEvent evt) {
-                passwordRequirement.setVisible(true);
-                animateRequirements(passwordRequirement);
                 validatePassword();
+                animateRequirements(passwordRequirement);
             }
             public void focusLost(FocusEvent evt) {
                 passwordRequirement.setVisible(false);
@@ -214,8 +213,10 @@ public class RegisterFrame extends JFrame {
         String username = usernameField.getText();
         if (username.contains("#") && username.length() <= 8) {
             usernameRequirement.setForeground(Color.GREEN);
+            usernameValid = true;
         } else {
             usernameRequirement.setForeground(Color.RED);
+            usernameValid = false;
         }
     }
 
@@ -228,25 +229,28 @@ public class RegisterFrame extends JFrame {
 
         if (hasUpperCase && hasNumber && hasSpecialChar && isValidLength) {
             passwordRequirement.setForeground(Color.GREEN);
+            passwordValid = true;
         } else {
             passwordRequirement.setForeground(Color.RED);
+            passwordValid = false;
         }
     }
 
     private void animateRequirements(JLabel label) {
         Timer timer = new Timer(10, new ActionListener() {
-            int height = 0;
+            int height = label.getPreferredSize().height;
             public void actionPerformed(ActionEvent e) {
-                if (height < label.getPreferredSize().height) {
-                    height += 2;
-                    label.setSize(label.getWidth(), height);
+                if (label.getHeight() < height) {
+                    label.setPreferredSize(new Dimension(label.getWidth(), label.getHeight() + 2));
+                    label.revalidate();
                     label.repaint();
                 } else {
                     ((Timer) e.getSource()).stop();
                 }
             }
         });
-        label.setSize(label.getWidth(), 0);
+        label.setPreferredSize(new Dimension(label.getWidth(), 0));
+        label.setVisible(true);
         timer.start();
     }
 
