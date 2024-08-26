@@ -15,7 +15,7 @@ public class RegisterFrame extends JFrame {
 
     public RegisterFrame() {
         setTitle("Register");
-        setSize(600, 400); // Set initial size
+        setSize(600, 450); // Increased height to ensure requirements are visible
         setResizable(false); // Disable window resizing
         setLayout(new GridBagLayout());
         setLocationRelativeTo(null); // Center the window
@@ -61,27 +61,29 @@ public class RegisterFrame extends JFrame {
         // Adjusted requirement labels to span more horizontally
         usernameRequirement = new JLabel("<html>Username must contain # and be no more than 8 characters.</html>");
         usernameRequirement.setForeground(Color.RED);
-        usernameRequirement.setVisible(false);
+        usernameRequirement.setVisible(true); // Initially visible
         usernameField.addFocusListener(new FocusAdapter() {
-            public void focusGained(FocusEvent evt) {
-                validateUsername();
-                animateRequirements(usernameRequirement);
-            }
             public void focusLost(FocusEvent evt) {
-                usernameRequirement.setVisible(false);
+                validateUsername();
+            }
+        });
+        usernameField.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                validateUsername();
             }
         });
 
         passwordRequirement = new JLabel("<html>Password must be at least 8 characters long, contain one capital letter, a number, and a special character.</html>");
         passwordRequirement.setForeground(Color.RED);
-        passwordRequirement.setVisible(false);
+        passwordRequirement.setVisible(true); // Initially visible
         passwordField.addFocusListener(new FocusAdapter() {
-            public void focusGained(FocusEvent evt) {
-                validatePassword();
-                animateRequirements(passwordRequirement);
-            }
             public void focusLost(FocusEvent evt) {
-                passwordRequirement.setVisible(false);
+                validatePassword();
+            }
+        });
+        passwordField.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                validatePassword();
             }
         });
 
@@ -257,7 +259,7 @@ public class RegisterFrame extends JFrame {
     private void adjustWindowSize() {
         // Automatically adjust window size based on content
         pack();
-        setSize(getWidth(), getHeight() + 50); // Add some space for the buttons
+        setSize(getWidth(), getHeight() + 50); // Adjust size to fit requirements area
     }
 
     private boolean isAnyFieldEmpty() {
